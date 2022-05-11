@@ -1,3 +1,4 @@
+const usersCollection = require('../db').collection('users')
 const validator = require('validator')
 
 let User = function(data) {
@@ -12,8 +13,8 @@ User.prototype.cleanUp = function() {
 
   // get rid of extra properties
   this.data = {
-    username: this.data.username.trim().toLowercase(),
-    email: this.data.email.trim().toLowercase(),
+    username: this.data.username.trim().toLowerCase(),
+    email: this.data.email.trim().toLowerCase(),
     password: this.data.password
   }
 }
@@ -36,6 +37,9 @@ User.prototype.register = function() {
   this.cleanUp()
   this.validate()
   // 2) only if there are no validation errors, save user data into databse
+  if (!this.errors.length) {
+    usersCollection.insertOne(this.data)
+  }
 }
 
 module.exports = User
