@@ -4,13 +4,18 @@ exports.login = (req, res) => {
   let user = new User(req.body)
   user.login().then(function(result) {
     req.session.user = {username: user.data.username}
-    res.send(result)
+    req.session.save(() => {
+      res.redirect('/')
+    })
   }).catch(function(e) {
     res.send(e)
   })
 }
 
-exports.logout = () => {
+exports.logout = (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/')
+  })
   
 }
 
