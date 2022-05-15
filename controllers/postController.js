@@ -1,3 +1,14 @@
+const Post = require('../models/Post')
+
 exports.viewCreateScreen = (req, res) => {
-  res.render('create-post', {username: req.session.user.username, avatar: req.session.user.avatar})
+  res.render('create-post')
+}
+
+exports.create = (req, res) => {
+  let post = new Post(req.body, req.session.user._id)
+  post.create().then(() => {
+    res.send("New post created")
+  }).catch((errors) => {
+    res.send(errors)
+  })
 }

@@ -15,6 +15,11 @@ let sessionOptions = session({
 app.use(sessionOptions)
 app.use(flash())
 
+app.use((req, res, next) => {
+  res.locals.user = req.session.user
+  next()
+})
+
 const router = require('./router')
 // whatever is exported is stored in router variable
 
