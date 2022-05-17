@@ -130,4 +130,20 @@ Post.findByAuthorId = (authorId) => {
   ])
 }
 
+Post.delete = (postId, currentUserId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let post = await Post.findSingleById(postId, currentUserId)
+      if (post.isVisitorOwner) {
+        await postsCollection.deleteOne({_id: new ObjectID(postId)})
+        resolve()
+      } else {
+        reject()
+      }
+    } catch {
+      reject()
+    }
+  })
+}
+
 module.exports = Post

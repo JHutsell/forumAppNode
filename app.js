@@ -19,8 +19,11 @@ app.use(flash())
 
 app.use((req, res, next) => {
   // make markdown function avaialable in ejs templates
-  res.locals.filterUserHTML = function(content) {
-    return sanitizeHTML(markdown.parse(content), {allowedTags: ['p', 'br', 'ul', 'li', 'strong', 'bold', 'i', 'h1', 'h2', 'h3', 'h4'], allowedAttributes: {}} )
+  res.locals.filterUserHTML = (content) => {
+    return sanitizeHTML(markdown.parse(content), {
+      allowedTags: sanitizeHTML.defaults.allowedTags.filter((tag) => tag !== 'a'), 
+      allowedAttributes: {}
+    })
   }
 
 

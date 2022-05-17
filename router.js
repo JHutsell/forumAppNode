@@ -13,6 +13,7 @@ router.post('/create-post', userController.mustBeLoggedIn, postController.create
 router.get('/post/:id', postController.viewSingle)
 router.get('/post/:id/edit', userController.mustBeLoggedIn, postController.viewEditScreen)
 router.post('/post/:id/edit', userController.mustBeLoggedIn, postController.edit)
+router.post('/post/:id/delete', userController.mustBeLoggedIn, postController.delete)
 //profile routes
 router.get('/profile/:username', userController.ifUserExists, userController.profilePostsScreen)
 
