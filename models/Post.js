@@ -75,7 +75,7 @@ Post.prototype.updateDb = function() {
   })
 }
 
-Post.reusablePostQuery = (uniqueOperations, visitorId) => {
+Post.reusablePostQuery = (uniqueOperations, visitorId, finalOperations = []) => {
   return new Promise(async (resolve, reject) => {
     let aggOperations = uniqueOperations.concat([
       {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}},
@@ -86,13 +86,15 @@ Post.reusablePostQuery = (uniqueOperations, visitorId) => {
         authorId: "$author",
         author: {$arrayElemAt: ["$authorDocument", 0]}
       }}
-    ])
+    ]).concat(finalOperations)
 
     let posts = await postsCollection.aggregate(aggOperations).toArray()
 
     //cleanup author property in post object
     posts = posts.map((post) => {
       post.isVisitorOwner = post.authorId.equals(visitorId)
+      post.authorId = undefined
+      
       post.author = {
         username: post.author.username,
         avatar: new User(post.author, true).avatar
@@ -141,6 +143,19 @@ Post.delete = (postId, currentUserId) => {
         reject()
       }
     } catch {
+      reject()
+    }
+  })
+}
+
+Post.search = (searchTerm) => {
+  return new Promise(async (resolve, reject) => {
+    if (typeof(searchTerm) == "string") {
+      let posts = await Post.reusablePostQuery([
+        {$match: {$text: {$search: searchTerm}}}
+      ], undefined, [{$sort: {score: {$meta: "textScore"}}}])
+      resolve(posts)
+    } else {
       reject()
     }
   })
