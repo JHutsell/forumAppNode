@@ -17,9 +17,10 @@ router.post('/post/:id/edit', userController.mustBeLoggedIn, postController.edit
 router.post('/post/:id/delete', userController.mustBeLoggedIn, postController.delete)
 router.post('/search', postController.search)
 //profile routes
-router.get('/profile/:username', userController.ifUserExists, userController.profilePostsScreen)
+router.get('/profile/:username', userController.ifUserExists, userController.sharedProfileData, userController.profilePostsScreen)
 //follow routes
 router.post('/addFollow/:username', userController.mustBeLoggedIn, followController.addFollow)
+router.post('/removeFollow/:username', userController.mustBeLoggedIn, followController.removeFollow)
 
 
 module.exports = router
