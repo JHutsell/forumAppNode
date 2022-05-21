@@ -94,7 +94,7 @@ Post.reusablePostQuery = (uniqueOperations, visitorId, finalOperations = []) => 
     posts = posts.map((post) => {
       post.isVisitorOwner = post.authorId.equals(visitorId)
       post.authorId = undefined
-      
+
       post.author = {
         username: post.author.username,
         avatar: new User(post.author, true).avatar
@@ -158,6 +158,13 @@ Post.search = (searchTerm) => {
     } else {
       reject()
     }
+  })
+}
+
+Post.countPostsByAuthor = (id) => {
+  return new Promise(async (resolve, reject) => {
+    let postCount = await postsCollection.countDocuments({author: id})
+    resolve(postCount)
   })
 }
 
